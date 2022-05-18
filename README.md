@@ -15,9 +15,12 @@ leetcode 每日一题推送(目前支持 slack/wecom)
 
 ### usage
 
-1、fork this repo
-2、添加 secret, SLACK_URL 为对应的 token 即可
-3、可自行拓展其他的通知方式
+- fork 此仓库
+- Secrets Actions 中添加 SLACK_URL 为对应的 token 即可
+
+![secrets_slack](./img/secrets_slack.png)
+
+- 可自行拓展其他的通知方式
 
 ### 效果图
 
