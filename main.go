@@ -24,9 +24,87 @@
 
 package main
 
-import "fmt"
+import (
+	"context"
+	"flag"
+	"fmt"
+	"github.com/cloud-org/msgpush"
+	"leetcode-question-today/api"
+	"log"
+	"os"
+	"strings"
+)
+
+var (
+	slack string // slack 通知链接
+	wecom string // wecom 通知链接
+	help  bool   // 帮助
+)
+
+func init() {
+	flag.StringVar(&slack, "slack", "", "slack webhook url")
+	flag.StringVar(&wecom, "wecom", "", "wecom webhook token")
+	flag.BoolVar(&help, "h", false, "帮助")
+	flag.Usage = usage
+}
+
+func usage() {
+	fmt.Fprintf(os.Stdout, `leetcode-question-today - leetcode 每日一题推送
+Usage: leetcode-question-today [-h help]
+Options:
+`)
+	flag.PrintDefaults()
+}
 
 func main() {
-	// you can delete this after clone template
-	fmt.Println("hello world")
+	flag.Parse()
+	if help {
+		flag.PrintDefaults()
+		return
+	}
+
+	// 获取每日一题，如果有则推送即可
+	resp, err := api.GetTodayQuestion(context.TODO())
+	if err != nil {
+		log.Printf("获取每日一题发生错误: %v\n", err)
+		return
+	}
+
+	if len(resp.TodayRecord) <= 0 {
+		log.Printf("todayRecord 长度为 0,请检查\n")
+		return
+	}
+
+	today := resp.TodayRecord[0]
+
+	msgTemplate := `每日一题(%s)
+Title: %s
+Tags: %s
+Link: %s
+LinkCN: %s`
+	date := today.Date
+	title := fmt.Sprintf("%s(%s)", today.Question.TitleCn, today.Question.Title)
+	tags := make([]string, 0)
+	for _, tag := range today.Question.TopicTags {
+		tags = append(tags, fmt.Sprintf("%s(%s)", tag.NameTranslated, tag.Name))
+	}
+	tagsValue := strings.Join(tags, "、")
+	link := fmt.Sprintf("%s/%s", api.Leetcode, today.Question.TitleSlug)
+	linkCn := fmt.Sprintf("%s/%s", api.LeetcodeCn, today.Question.TitleSlug)
+
+	content := fmt.Sprintf(msgTemplate, date, title, tagsValue, link, linkCn)
+
+	log.Println(content)
+
+	if slack != "" {
+		s := msgpush.NewSlack(slack)
+		_ = s.Send(content)
+	}
+
+	if wecom != "" {
+		w := msgpush.NewWeCom(wecom)
+		_ = w.SendText(content)
+	}
+
+	return
 }

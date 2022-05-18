@@ -1,0 +1,28 @@
+name: "leetcode-question-today"
+
+on:
+  schedule:
+    - cron: "0 12 * * *"
+  workflow_dispatch:
+
+jobs:
+  today:
+    runs-on: ubuntu-latest
+    steps:
+        - name: Checkout
+          uses: actions/checkout@v2
+          with:
+            fetch-depth: 0
+
+        - name: Set up Go
+          uses: actions/setup-go@v2
+          with:
+            go-version: 1.16
+
+        - name: run cmd
+          run: |
+            go run main.go -slack ${{ secrets.SLACK_URL }}
+
+        - name: echo
+          run: |
+            echo "notify ok" 
