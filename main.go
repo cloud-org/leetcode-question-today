@@ -28,11 +28,12 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"github.com/cloud-org/msgpush"
 	"leetcode-question-today/api"
 	"log"
 	"os"
 	"strings"
+
+	"github.com/cloud-org/msgpush"
 )
 
 var (
@@ -89,8 +90,8 @@ LinkCN: %s`
 		tags = append(tags, fmt.Sprintf("%s(%s)", tag.NameTranslated, tag.Name))
 	}
 	tagsValue := strings.Join(tags, "、")
-	link := fmt.Sprintf("%s/%s", api.Leetcode, today.Question.TitleSlug)
-	linkCn := fmt.Sprintf("%s/%s", api.LeetcodeCn, today.Question.TitleSlug)
+	link := fmt.Sprintf("%s/problems/%s", api.Leetcode, today.Question.TitleSlug)
+	linkCn := fmt.Sprintf("%s/problems/%s", api.LeetcodeCn, today.Question.TitleSlug)
 
 	content := fmt.Sprintf(msgTemplate, date, title, tagsValue, link, linkCn)
 

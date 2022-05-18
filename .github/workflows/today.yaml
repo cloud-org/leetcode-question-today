@@ -2,7 +2,7 @@ name: "leetcode-question-today"
 
 on:
   schedule:
-    - cron: "0 12 * * *"
+    - cron: "0 2 * * *" # 2 + 8 = 10 北京时间上午 10 点
   workflow_dispatch:
 
 jobs:
