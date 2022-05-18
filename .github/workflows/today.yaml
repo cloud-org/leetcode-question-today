@@ -21,6 +21,7 @@ jobs:
 
         - name: run cmd
           run: |
+            go mod tidy
             go run main.go -slack ${{ secrets.SLACK_URL }}
 
         - name: echo
