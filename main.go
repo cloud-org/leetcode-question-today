@@ -80,10 +80,12 @@ func main() {
 
 	msgTemplate := `每日一题(%s)
 Title: %s
+Difficulty: %s
 Tags: %s
 Link: %s
 LinkCN: %s`
 	date := today.Date
+	difficulty := today.Question.Difficulty
 	title := fmt.Sprintf("%s(%s)", today.Question.TitleCn, today.Question.Title)
 	tags := make([]string, 0)
 	for _, tag := range today.Question.TopicTags {
@@ -93,7 +95,7 @@ LinkCN: %s`
 	link := fmt.Sprintf("%s/problems/%s", api.Leetcode, today.Question.TitleSlug)
 	linkCn := fmt.Sprintf("%s/problems/%s", api.LeetcodeCn, today.Question.TitleSlug)
 
-	content := fmt.Sprintf(msgTemplate, date, title, tagsValue, link, linkCn)
+	content := fmt.Sprintf(msgTemplate, date, title, difficulty, tagsValue, link, linkCn)
 
 	log.Println(content)
 

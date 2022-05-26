@@ -1,18 +1,18 @@
 repos:
   - repo: https://github.com/thlorenz/doctoc
-    rev: v1.4.0
+    rev: v2.2.0
     hooks:
       - id: doctoc
         exclude: ^vendor/
-  - repo: git://github.com/dnephin/pre-commit-golang
-    rev: master
+  - repo: https://github.com/dnephin/pre-commit-golang
+    rev: v0.5.0
     hooks:
       - id: go-fmt
         exclude: ^vendor/
       - id: go-imports
         exclude: ^vendor/
   - repo: https://github.com/Lucas-C/pre-commit-hooks
-    rev: v1.1.10
+    rev: v1.2.0
     hooks:
       - id: insert-license
         exclude: ^vendor/
