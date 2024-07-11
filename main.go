@@ -33,7 +33,7 @@ import (
 	"os"
 	"strings"
 
-	"msgpush"
+	"leetcode-question-today/msgpush"
 )
 
 var (
