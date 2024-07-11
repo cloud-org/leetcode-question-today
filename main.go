@@ -100,8 +100,8 @@ LinkCN: %s`
 	log.Println(content)
 
 	if slack != "" {
-		s := msgpush.NewSlack(slack)
-		_ = s.Send(content)
+		// s := msgpush.NewSlack(slack)
+		// _ = s.Send(content)
 	}
 
 	if wecom != "" {
