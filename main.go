@@ -28,22 +28,21 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"leetcode-question-today/api"
 	"log"
+	"math/rand"
 	"os"
 	"strings"
 
+	"leetcode-question-today/api"
 	"leetcode-question-today/msgpush"
 )
 
 var (
-	slack string // slack 通知链接
 	wecom string // wecom 通知链接
 	help  bool   // 帮助
 )
 
 func init() {
-	flag.StringVar(&slack, "slack", "", "slack webhook url")
 	flag.StringVar(&wecom, "wecom", "", "wecom webhook token")
 	flag.BoolVar(&help, "h", false, "帮助")
 	flag.Usage = usage
@@ -56,6 +55,13 @@ Options:
 `)
 	flag.PrintDefaults()
 }
+
+const msgTemplate = `每日一题(%s)
+Title: %s
+Difficulty: %s
+Tags: %s
+Link: %s
+LinkCN: %s`
 
 func main() {
 	flag.Parse()
@@ -71,20 +77,46 @@ func main() {
 		return
 	}
 
+	// 获取每日一题，如果有则推送即可
+	respAll, err := api.GetALLQuestionsV2()
+	if err != nil {
+		log.Printf("获取每日一题发生错误: %v\n", err)
+		return
+	}
+
 	if len(resp.TodayRecord) <= 0 {
+		log.Printf("todayRecord 长度为 0,请检查\n")
+		return
+	}
+	if len(respAll.Data.P.Questions) <= 0 {
 		log.Printf("todayRecord 长度为 0,请检查\n")
 		return
 	}
 
 	today := resp.TodayRecord[0]
-
-	msgTemplate := `每日一题(%s)
-Title: %s
-Difficulty: %s
-Tags: %s
-Link: %s
-LinkCN: %s`
 	date := today.Date
+	for i := 0; i < 3; i++ {
+		index := rand.Int() % 100
+		q := respAll.Data.P.Questions[index]
+		diff := q.Difficulty
+		title := q.TitleCn
+		link := fmt.Sprintf("%s/problems/%s", api.Leetcode, q.TitleSlug)
+		linkCn := fmt.Sprintf("%s/problems/%s", api.LeetcodeCn, q.TitleSlug)
+		tags := make([]string, 0)
+		for _, tag := range q.TopicTags {
+			tags = append(tags, fmt.Sprintf("%s(%s)", tag.NameTranslated, tag.Name))
+		}
+		tagsValue := strings.Join(tags, "、")
+		content := fmt.Sprintf(msgTemplate, date, title, diff, tagsValue, link, linkCn)
+
+		log.Println(content)
+
+		if wecom != "" {
+			w := msgpush.NewWeCom(wecom)
+			_ = w.SendText(content, []string{"bin.zhang"})
+		}
+	}
+
 	difficulty := today.Question.Difficulty
 	title := fmt.Sprintf("%s(%s)", today.Question.TitleCn, today.Question.Title)
 	tags := make([]string, 0)
@@ -99,14 +131,9 @@ LinkCN: %s`
 
 	log.Println(content)
 
-	if slack != "" {
-		// s := msgpush.NewSlack(slack)
-		// _ = s.Send(content)
-	}
-
 	if wecom != "" {
 		w := msgpush.NewWeCom(wecom)
-		_ = w.SendText(content,[]string{"bin.zhang"})
+		_ = w.SendText(content, []string{"bin.zhang"})
 	}
 
 	return

@@ -104,3 +104,95 @@ type QuestionTodayResp struct {
 		LastSubmission interface{} `json:"lastSubmission"`
 	} `json:"todayRecord"`
 }
+
+const QuestionsQuery = `query problemsetQuestionList($categorySlug: String, $limit: Int, $skip: Int, $filters: QuestionListFilterInput) {
+  problemsetQuestionList(
+    categorySlug: $categorySlug
+    limit: $limit
+    skip: $skip
+    filters: $filters
+  ) {
+    hasMore
+    total
+    questions {
+      acRate
+      difficulty
+      freqBar
+      frontendQuestionId
+      isFavor
+      paidOnly
+      solutionNum
+      status
+      title
+      titleCn
+      titleSlug
+      topicTags {
+        name
+        nameTranslated
+        id
+        slug
+      }
+      extra {
+        hasVideoSolution
+        topCompanyTags {
+          imgUrl
+          slug
+          numSubscribed
+        }
+      }
+    }
+  }
+}`
+
+type CommonTagNode struct {
+	ID             string `json:"id"`
+	Name           string `json:"name"`
+	Slug           string `json:"slug"`
+	NameTranslated string `json:"nameTranslated"`
+	Typename       string `json:"__typename"`
+}
+
+type TopCompanyTag struct {
+	ImgUrl   string `json:"imgUrl"`
+	Slug     string `json:"slug"`
+	Typename string `json:"__typename"`
+}
+
+type QuestionExtraInfoNode struct {
+	CompanyTagNum    int             `json:"companyTagNum"`
+	HasVideoSolution bool            `json:"hasVideoSolution"`
+	TopCompanyTags   []TopCompanyTag `json:"topCompanyTags"`
+	Typename         string          `json:"__typename"`
+}
+
+type QuestionLightNode struct {
+	Typename           string                `json:"__typename"`
+	AcRate             float64               `json:"acRate"`
+	Difficulty         string                `json:"difficulty"`
+	FreqBar            int                   `json:"freqBar"`
+	PaidOnly           bool                  `json:"paidOnly"`
+	Status             string                `json:"status"`
+	FrontendQuestionId string                `json:"frontendQuestionId"`
+	IsFavor            bool                  `json:"isFavor"`
+	SolutionNum        int                   `json:"solutionNum"`
+	Title              string                `json:"title"`
+	TitleCn            string                `json:"titleCn"`
+	TitleSlug          string                `json:"titleSlug"`
+	TopicTags          []CommonTagNode       `json:"topicTags"`
+	Extra              QuestionExtraInfoNode `json:"extra"`
+}
+
+type problemsetQuestionList struct {
+	HasMore   bool                `json:"hasMore"`
+	Total     int                 `json:"total"`
+	Questions []QuestionLightNode `json:"questions"`
+	TypeName  string              `json:"__typename"`
+}
+
+type QuestionTodayResponse struct {
+	P problemsetQuestionList `json:"problemsetQuestionList"`
+}
+
+type Data struct {
+	Data QuestionTodayResponse `json:"data""`
+}

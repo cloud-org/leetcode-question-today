@@ -27,7 +27,7 @@ type WeCom struct {
 	ReqUrl string
 }
 
-//NewWeCom
+// NewWeCom
 func NewWeCom(token string) *WeCom {
 	return &WeCom{Token: token, ReqUrl: wecomBase + token}
 }
@@ -48,7 +48,7 @@ func (w *WeCom) SendMd(content string) error {
 	return err
 }
 
-func (w *WeCom) SendText(content string,ms []string) error {
+func (w *WeCom) SendText(content string, ms []string) error {
 	_, err := req.Post(w.ReqUrl, req.BodyJSON(&weComSendTextContent{
 		Msgtype: "text",
 		Text: struct {
@@ -56,7 +56,7 @@ func (w *WeCom) SendText(content string,ms []string) error {
 			MentionedList       []string `json:"mentioned_list"`
 			MentionedMobileList []string `json:"mentioned_mobile_list"`
 		}{
-			Content: content,
+			Content:       content,
 			MentionedList: ms,
 		},
 	}))

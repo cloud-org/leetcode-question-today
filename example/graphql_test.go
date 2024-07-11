@@ -2,10 +2,11 @@ package example_test
 
 import (
 	"context"
-	"github.com/machinebox/graphql"
-	"leetcode-question-today/api"
 	"log"
 	"testing"
+
+	"github.com/machinebox/graphql"
+	"leetcode-question-today/api"
 )
 
 func TestGraphql(t *testing.T) {
