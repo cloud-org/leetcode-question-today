@@ -113,7 +113,7 @@ func main() {
 
 		if wecom != "" {
 			w := msgpush.NewWeCom(wecom)
-			_ = w.SendText(content, []string{"bin.zhang"})
+			_ = w.SendText(content, []string{"hongyu.an", "quan.ren", "binyuan.rong", "ming.wen"})
 		}
 	}
 
