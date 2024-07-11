@@ -33,7 +33,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/cloud-org/msgpush"
+	"msgpush"
 )
 
 var (
@@ -106,7 +106,7 @@ LinkCN: %s`
 
 	if wecom != "" {
 		w := msgpush.NewWeCom(wecom)
-		_ = w.SendText(content)
+		_ = w.SendText(content,[]string{"bin.zhang"})
 	}
 
 	return
