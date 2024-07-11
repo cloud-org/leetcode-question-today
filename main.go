@@ -96,7 +96,7 @@ func main() {
 	today := resp.TodayRecord[0]
 	date := today.Date
 	for i := 0; i < 3; i++ {
-		index := rand.Int() % 100
+		index := rand.Uint32() % 100
 		q := respAll.Data.P.Questions[index]
 		diff := q.Difficulty
 		title := q.TitleCn
